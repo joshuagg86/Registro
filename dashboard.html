@@ -1,4 +1,3 @@
-<?php
 // Cargar base de datos local JSON (o inicializar vacía)
 $dataFile = 'medicos_db.json';
 $medicos = file_exists($dataFile) ? json_decode(file_get_contents($dataFile), true) : [];
