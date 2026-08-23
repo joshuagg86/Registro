@@ -27,9 +27,8 @@
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
       <div class="flex items-center gap-3">
         <img src="img/menarini_b.png" alt="Menarini Logo" class="h-7 object-contain" onerror="this.style.display='none'">
-        <span class="text-base font-extrabold tracking-tight text-white">MENARINI</span>
         <span class="hidden sm:inline-block h-5 w-[1px] bg-teal-600/50"></span>
-        <span class="hidden sm:inline-block text-xs font-semibold tracking-wider text-teal-200/80 uppercase">Plataforma de Asistencia</span>
+        <span class="hidden sm:inline-block text-xs font-semibold tracking-wider text-teal-200/80 uppercase">Registro de Asistencia</span>
       </div>
       
       <nav class="flex bg-[#002b31] p-1 rounded-xl border border-teal-800/60 shadow-inner">
@@ -358,11 +357,13 @@
     function seleccionarEstado(estado, btn) {
       estadoSeleccionado = estado;
       
-      document.querySelectorAll('.btn-estado').forEach(b => {
-        b.className = "btn-estado group border-2 border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-[#003e46] hover:bg-white transition-all shadow-sm";
-      });
+      // Resetear todos
+      limpiarSeleccionBotones();
 
-      btn.className = "btn-estado group border-2 border-[#003e46] bg-[#003e46] text-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all shadow-md scale-105";
+      // Activar botón seleccionado con texto blanco contrastado
+      btn.className = "btn-estado group border-2 border-[#003e46] bg-[#003e46] text-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all shadow-md scale-105 outline-none";
+      const span = btn.querySelector('span');
+      if (span) span.className = "text-xs font-bold text-white";
 
       const badge = document.getElementById('badge-escaneando');
       if(badge) badge.innerHTML = `<span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping"></span> Escaneando: <strong>${estado}</strong>`;
@@ -387,14 +388,14 @@
         html5QrcodeScanner.stop().then(() => {
           html5QrcodeScanner = null;
           document.getElementById('cam-container').classList.add('hidden');
+          limpiarSeleccionBotones();
         }).catch(() => {});
       }
     }
 
     function onScanSuccess(decodedText) {
-      if (html5QrcodeScanner) {
-        html5QrcodeScanner.pause(true);
-      }
+      // 1. Apagar la cámara inmediatamente al escanear
+      detenerCamara();
 
       const now = new Date();
       const horaTexto = now.toLocaleDateString([], { day: '2-digit', month: '2-digit' }) + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -412,30 +413,36 @@
           hora: horaTexto
         });
 
-        divRes.className = "mt-4 p-5 rounded-2xl bg-emerald-600 text-white shadow-lg space-y-1 text-center animate-bounce";
+        // Notificación clara de éxito
+        divRes.className = "mt-4 p-6 rounded-2xl bg-emerald-600 text-white shadow-xl space-y-2 text-center animate-bounce border-2 border-emerald-400";
         divRes.innerHTML = `
-          <div class="text-xl font-black">✓ Acceso Registrado</div>
-          <div class="text-xs opacity-90">${medico.nombre} (${medico.codigo})</div>
-          <div class="text-[10px] font-mono bg-white/20 inline-block px-3 py-1 rounded-full uppercase font-bold mt-1">${estadoSeleccionado} — ${horaTexto}</div>
+          <div class="text-2xl font-black flex items-center justify-center gap-2">
+            <span>✓</span> ¡Acceso Registrado!
+          </div>
+          <div class="text-sm font-bold opacity-95">${medico.nombre}</div>
+          <div class="text-xs opacity-80">${medico.especialidad} — (${medico.codigo})</div>
+          <div class="inline-block mt-2 px-4 py-1.5 bg-white/20 backdrop-blur-md rounded-full text-xs font-mono font-black uppercase tracking-wider">
+            ${estadoSeleccionado} • ${horaTexto}
+          </div>
         `;
         renderizarTabla();
       } else {
-        divRes.className = "mt-4 p-5 rounded-2xl bg-rose-600 text-white shadow-lg space-y-1 text-center";
+        // Notificación de error
+        divRes.className = "mt-4 p-6 rounded-2xl bg-rose-600 text-white shadow-xl space-y-2 text-center border-2 border-rose-400";
         divRes.innerHTML = `
-          <div class="text-xl font-black">✕ Código No Registrado</div>
-          <div class="text-xs opacity-90">${decodedText}</div>
+          <div class="text-2xl font-black flex items-center justify-center gap-2">
+            <span>✕</span> Código No Encontrado
+          </div>
+          <div class="text-xs font-mono bg-black/20 inline-block px-3 py-1 rounded-md mt-1">${decodedText}</div>
         `;
       }
 
       divRes.classList.remove('hidden');
 
+      // Ocultar el mensaje automáticamente después de 4 segundos
       setTimeout(() => {
         divRes.classList.add('hidden');
         divRes.innerHTML = '';
-
-        if (html5QrcodeScanner) {
-          html5QrcodeScanner.resume();
-        }
       }, 4000);
     }
 
@@ -459,6 +466,16 @@
 
     // Inicializar al cargar la página
     cargarBaseDeDatos();
+
+    function limpiarSeleccionBotones() {
+    estadoSeleccionado = "";
+    document.querySelectorAll('.btn-estado').forEach(b => {
+      b.className = "btn-estado group border-2 border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-[#003e46] hover:bg-white transition-all shadow-sm outline-none";
+      // Asegurar texto en color slate oscuro
+      const span = b.querySelector('span');
+      if (span) span.className = "text-xs font-bold text-slate-700";
+    });
+  }
   </script>
 </body>
 </html>
