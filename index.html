@@ -1,7 +1,3 @@
-// Cargar base de datos local JSON (o inicializar vacía)
-$dataFile = 'medicos_db.json';
-$medicos = file_exists($dataFile) ? json_decode(file_get_contents($dataFile), true) : [];
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -30,31 +26,32 @@ $medicos = file_exists($dataFile) ? json_decode(file_get_contents($dataFile), tr
   <header class="bg-[#003e46] text-white py-3.5 px-4 shadow-xl sticky top-0 z-40 border-b border-teal-800/40">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
       <div class="flex items-center gap-3">
-        <img src="img/menarini_b.png" alt="Menarini Logo" class="h-7 object-contain">
+        <img src="img/menarini_b.png" alt="Menarini Logo" class="h-7 object-contain" onerror="this.style.display='none'">
+        <span class="text-base font-extrabold tracking-tight text-white">MENARINI</span>
         <span class="hidden sm:inline-block h-5 w-[1px] bg-teal-600/50"></span>
         <span class="hidden sm:inline-block text-xs font-semibold tracking-wider text-teal-200/80 uppercase">Plataforma de Asistencia</span>
       </div>
       
       <nav class="flex bg-[#002b31] p-1 rounded-xl border border-teal-800/60 shadow-inner">
-  <button onclick="cambiarPestana('registrados')" id="tab-registrados" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[#51c3bc] text-[#003e46] transition-all shadow-sm flex items-center gap-2 outline-none focus:outline-none">
-    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-    <span>Registro Presencial</span>
-  </button>
-  
-  <button onclick="cambiarPestana('escaneo')" id="tab-escaneo" class="px-3.5 py-1.5 rounded-lg text-xs font-medium text-teal-200/80 hover:text-white hover:bg-white/5 transition-all flex items-center gap-2 outline-none focus:outline-none">
-    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
-    <span>Escáner QR</span>
-  </button>
-</nav>
+        <button onclick="cambiarPestana('registrados')" id="tab-registrados" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[#51c3bc] text-[#003e46] transition-all shadow-sm flex items-center gap-2 outline-none focus:outline-none">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+          <span>Registro Presencial</span>
+        </button>
+        
+        <button onclick="cambiarPestana('escaneo')" id="tab-escaneo" class="px-3.5 py-1.5 rounded-lg text-xs font-medium text-teal-200/80 hover:text-white hover:bg-white/5 transition-all flex items-center gap-2 outline-none focus:outline-none">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+          <span>Escáner QR</span>
+        </button>
+      </nav>
     </div>
   </header>
 
   <main class="max-w-7xl mx-auto px-4 mt-8 space-y-8">
 
-    <!-- ================= PESTAÑA 1: REGISTRO PRESENCIAL ================= -->
+    <!-- PESTAÑA 1: REGISTRO PRESENCIAL -->
     <section id="sec-registrados" class="space-y-6">
       
-      <!-- CARDS DE METRICAS KPI -->
+      <!-- CARDS KPI -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between">
           <div>
@@ -89,39 +86,33 @@ $medicos = file_exists($dataFile) ? json_decode(file_get_contents($dataFile), tr
         </div>
       </div>
 
-      <!-- BARRA DE BÚSQUEDA Y EXPORTACIÓN -->
+      <!-- FILTROS -->
       <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5 space-y-4">
         <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-          <h3 class="text-sm font-bold text-[#003e46] flex items-center gap-2">
-            🔍 Filtrar Registros
-          </h3>
-          <span class="text-xs text-slate-400 font-medium" id="resultados-conteo">Mostrando registros</span>
+          <h3 class="text-sm font-bold text-[#003e46] flex items-center gap-2">🔍 Filtrar Registros</h3>
+          <span class="text-xs text-slate-400 font-medium" id="resultados-conteo">Cargando registros...</span>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Nombre Médico</label>
-            <input type="text" id="filtro-nombre" oninput="filtrarTabla()" placeholder="Buscar por doctor..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#003e46]/30 focus:border-[#003e46] transition">
+            <input type="text" id="filtro-nombre" oninput="filtrarTabla()" placeholder="Buscar por doctor..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#003e46]/30 transition">
           </div>
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Especialidad</label>
-            <input type="text" id="filtro-especialidad" oninput="filtrarTabla()" placeholder="Trauma, Ortopedia..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#003e46]/30 focus:border-[#003e46] transition">
+            <input type="text" id="filtro-especialidad" oninput="filtrarTabla()" placeholder="Trauma, Ortopedia..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#003e46]/30 transition">
           </div>
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Contacto</label>
-            <input type="text" id="filtro-contacto" oninput="filtrarTabla()" placeholder="Correo o teléfono..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#003e46]/30 focus:border-[#003e46] transition">
+            <input type="text" id="filtro-contacto" oninput="filtrarTabla()" placeholder="Correo o teléfono..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#003e46]/30 transition">
           </div>
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Código ID</label>
-            <input type="text" id="filtro-codigo" oninput="filtrarTabla()" placeholder="SKIP-TO-001..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#003e46]/30 focus:border-[#003e46] transition">
+            <input type="text" id="filtro-codigo" oninput="filtrarTabla()" placeholder="SKIP-TO-001..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#003e46]/30 transition">
           </div>
           <div class="flex items-end gap-2">
-            <button onclick="exportarExcel()" class="w-1/2 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center justify-center gap-1">
-              📊 Excel
-            </button>
-            <button onclick="exportarPDF()" class="w-1/2 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center justify-center gap-1">
-              📄 PDF
-            </button>
+            <button onclick="exportarExcel()" class="w-1/2 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center justify-center gap-1">📊 Excel</button>
+            <button onclick="exportarPDF()" class="w-1/2 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center justify-center gap-1">📄 PDF</button>
           </div>
         </div>
       </div>
@@ -129,7 +120,7 @@ $medicos = file_exists($dataFile) ? json_decode(file_get_contents($dataFile), tr
       <!-- CARDS MOBILE -->
       <div id="cards-container-mobile" class="grid grid-cols-1 gap-4 md:hidden"></div>
 
-      <!-- TABLA DESKTOP MODERNA -->
+      <!-- TABLA DESKTOP -->
       <div class="hidden md:block bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs text-slate-600 border-collapse">
@@ -152,53 +143,34 @@ $medicos = file_exists($dataFile) ? json_decode(file_get_contents($dataFile), tr
       </div>
     </section>
 
-    <!-- ================= PESTAÑA 2: ESCANEO QR ================= -->
+    <!-- PESTAÑA 2: ESCANEO QR -->
     <section id="sec-escaneo" class="hidden max-w-2xl mx-auto space-y-6">
-      
       <div class="bg-white rounded-3xl shadow-xl border border-slate-200/80 p-6 md:p-8 space-y-6">
-        
         <div class="text-center space-y-2">
-          <span class="inline-block px-3.5 py-1 bg-[#51c3bc]/20 text-[#003e46] text-[10px] font-extrabold uppercase tracking-widest rounded-full">
-            Control de Asistencia Presencial
-          </span>
+          <span class="inline-block px-3.5 py-1 bg-[#51c3bc]/20 text-[#003e46] text-[10px] font-extrabold uppercase tracking-widest rounded-full">Control de Asistencia Presencial</span>
           <h2 class="text-2xl font-extrabold text-[#003e46]">Lector de Códigos QR</h2>
-          <p class="text-xs text-slate-400 max-w-md mx-auto">Selecciona el tipo de registro que vas a realizar y apunta la cámara al código del gafete</p>
+          <p class="text-xs text-slate-400 max-w-md mx-auto">Selecciona el tipo de registro y apunta la cámara al gafete</p>
         </div>
 
         <div>
-          <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3 text-center">
-            1. Selecciona el tipo de Marcaje:
-          </label>
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3 text-center">1. Selecciona el tipo de Marcaje:</label>
           <div class="grid grid-cols-2 gap-3">
-            
-            <button type="button" onclick="seleccionarEstado('Entrada', this)" class="btn-estado group relative border-2 border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-[#003e46] hover:bg-white transition-all shadow-sm">
-              <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg font-bold group-hover:scale-110 transition-transform">
-                ➔
-              </div>
+            <button type="button" onclick="seleccionarEstado('Entrada', this)" class="btn-estado group border-2 border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-[#003e46] hover:bg-white transition-all shadow-sm">
+              <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg font-bold">➔</div>
               <span class="text-xs font-bold text-slate-700">Entrada Evento</span>
             </button>
-
-            <button type="button" onclick="seleccionarEstado('Salida Comer', this)" class="btn-estado group relative border-2 border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-[#003e46] hover:bg-white transition-all shadow-sm">
-              <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-lg font-bold group-hover:scale-110 transition-transform">
-                🍽️
-              </div>
+            <button type="button" onclick="seleccionarEstado('Salida Comer', this)" class="btn-estado group border-2 border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-[#003e46] hover:bg-white transition-all shadow-sm">
+              <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-lg font-bold">🍽️</div>
               <span class="text-xs font-bold text-slate-700">Salida a Comer</span>
             </button>
-
-            <button type="button" onclick="seleccionarEstado('Regreso Comer', this)" class="btn-estado group relative border-2 border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-[#003e46] hover:bg-white transition-all shadow-sm">
-              <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center text-lg font-bold group-hover:scale-110 transition-transform">
-                ↩️
-              </div>
+            <button type="button" onclick="seleccionarEstado('Regreso Comer', this)" class="btn-estado group border-2 border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-[#003e46] hover:bg-white transition-all shadow-sm">
+              <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center text-lg font-bold">↩️</div>
               <span class="text-xs font-bold text-slate-700">Regreso de Comer</span>
             </button>
-
-            <button type="button" onclick="seleccionarEstado('Salida Evento', this)" class="btn-estado group relative border-2 border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-[#003e46] hover:bg-white transition-all shadow-sm">
-              <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center text-lg font-bold group-hover:scale-110 transition-transform">
-                🚪
-              </div>
+            <button type="button" onclick="seleccionarEstado('Salida Evento', this)" class="btn-estado group border-2 border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-[#003e46] hover:bg-white transition-all shadow-sm">
+              <div class="w-10 h-10 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center text-lg font-bold">🚪</div>
               <span class="text-xs font-bold text-slate-700">Salida Evento</span>
             </button>
-
           </div>
         </div>
 
@@ -209,73 +181,54 @@ $medicos = file_exists($dataFile) ? json_decode(file_get_contents($dataFile), tr
             </span>
             <span class="text-[10px] text-slate-400 uppercase font-semibold">Cámara Activa</span>
           </div>
-
           <div class="relative rounded-2xl overflow-hidden bg-slate-900 border-2 border-[#003e46] shadow-inner">
             <div id="reader" class="w-full"></div>
           </div>
-
-          <button onclick="detenerCamara()" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2">
-            ✕ Apagar Cámara
-          </button>
+          <button onclick="detenerCamara()" class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition">✕ Apagar Cámara</button>
         </div>
 
         <div id="resultado-escaneo" class="mt-4 p-5 rounded-2xl hidden text-center space-y-1 transition-all shadow-md"></div>
-
       </div>
     </section>
 
   </main>
 
-  <!-- MODAL DE EDICIÓN -->
-  <div id="modal-editar" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white rounded-3xl shadow-2xl p-6 max-w-md w-full space-y-5 border border-slate-100">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-        <h3 class="text-base font-extrabold text-[#003e46]">Editar Datos del Médico</h3>
-        <span id="edit-codigo-display" class="text-xs font-mono font-extrabold bg-blue-50 text-blue-600 px-3 py-1 rounded-full"></span>
-      </div>
-      
-      <form id="form-editar-medico" onsubmit="guardarEdicionMedico(event)" class="space-y-4">
-        <input type="hidden" id="edit-codigo">
-        <div>
-          <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Nombre Completo</label>
-          <input type="text" id="edit-nombre" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-[#003e46]">
-        </div>
-        <div>
-          <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Especialidad</label>
-          <input type="text" id="edit-especialidad" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-[#003e46]">
-        </div>
-        <div>
-          <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Teléfono</label>
-          <input type="tel" id="edit-telefono" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-[#003e46]">
-        </div>
-        <div>
-          <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Correo Electrónico</label>
-          <input type="email" id="edit-correo" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-[#003e46]">
-        </div>
-
-        <div class="flex gap-2 pt-2">
-          <button type="button" onclick="cerrarModalEditar()" class="w-1/2 py-3 border border-slate-200 rounded-xl text-slate-600 text-xs font-bold hover:bg-slate-50 transition">Cancelar</button>
-          <button type="submit" class="w-1/2 py-3 bg-[#003e46] text-white rounded-xl text-xs font-bold hover:bg-[#062c31] transition shadow-md">Guardar Cambios</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <div id="qrcode-hidden" class="hidden"></div>
-
   <script>
-    let medicosDB = <?php echo json_encode($medicos); ?>;
+    let medicosDB = [];
     let estadoSeleccionado = "";
     let html5QrcodeScanner = null;
 
+    // CARGA AUTOMÁTICA DE BASE DE DATOS JSON DESDE FETCH
+    async function cargarBaseDeDatos() {
+      try {
+        const resp = await fetch('medicos.json');
+        medicosDB = await resp.json();
+        renderizarTabla();
+      } catch (e) {
+        console.error("Error al cargar medicos.json", e);
+      }
+    }
+
+    function cambiarPestana(pestana) {
+      document.getElementById('sec-registrados').classList.toggle('hidden', pestana !== 'registrados');
+      document.getElementById('sec-escaneo').classList.toggle('hidden', pestana !== 'escaneo');
+
+      ['registrados', 'escaneo'].forEach(tab => {
+        const btn = document.getElementById(`tab-${tab}`);
+        if (btn) {
+          btn.className = (tab === pestana) 
+            ? "px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[#51c3bc] text-[#003e46] transition-all shadow-sm flex items-center gap-2 outline-none focus:outline-none"
+            : "px-3.5 py-1.5 rounded-lg text-xs font-medium text-teal-200/80 hover:text-white hover:bg-white/5 transition-all flex items-center gap-2 outline-none focus:outline-none";
+        }
+      });
+
+      if (pestana !== 'escaneo') detenerCamara();
+      if (pestana === 'registrados') renderizarTabla();
+    }
+
     function obtenerEstadoTiempoPresencial(m) {
       if (!m.historial_qr || m.historial_qr.length === 0) {
-        return { 
-          minutos: 0, 
-          estaActivo: false, 
-          estadoTexto: 'FUERA DE EVENTO',
-          minutosTexto: '0 min' 
-        };
+        return { minutos: 0, estaActivo: false, estadoTexto: 'FUERA DE EVENTO', minutosTexto: '0 min' };
       }
 
       let totalSegundos = 0;
@@ -308,23 +261,6 @@ $medicos = file_exists($dataFile) ? json_decode(file_get_contents($dataFile), tr
       };
     }
 
-    function cambiarPestana(pestana) {
-      document.getElementById('sec-registrados').classList.toggle('hidden', pestana !== 'registrados');
-      document.getElementById('sec-escaneo').classList.toggle('hidden', pestana !== 'escaneo');
-
-      ['registrados', 'escaneo'].forEach(tab => {
-        const btn = document.getElementById(`tab-${tab}`);
-        if (btn) {
-          btn.className = (tab === pestana) 
-            ? "px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-[#51c3bc] text-[#003e46] transition-all shadow-sm flex items-center gap-2 outline-none focus:outline-none"
-            : "px-3.5 py-1.5 rounded-lg text-xs font-medium text-teal-200/80 hover:text-white hover:bg-white/5 transition-all flex items-center gap-2 outline-none focus:outline-none";
-        }
-      });
-
-      if (pestana !== 'escaneo') detenerCamara();
-      if (pestana === 'registrados') renderizarTabla();
-    }
-
     function actualizarKPIs() {
       let activos = 0;
       let fuera = 0;
@@ -344,94 +280,89 @@ $medicos = file_exists($dataFile) ? json_decode(file_get_contents($dataFile), tr
     }
 
     function renderizarTabla(datos = medicosDB) {
-  const tbody = document.getElementById('tabla-body');
-  const cardsContainer = document.getElementById('cards-container-mobile');
-  
-  actualizarKPIs();
-  document.getElementById('resultados-conteo').textContent = `Mostrando ${datos.length} de ${medicosDB.length} registrados`;
+      const tbody = document.getElementById('tabla-body');
+      const cardsContainer = document.getElementById('cards-container-mobile');
+      
+      actualizarKPIs();
+      document.getElementById('resultados-conteo').textContent = `Mostrando ${datos.length} de ${medicosDB.length} registrados`;
 
-  if (datos.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="9" class="px-5 py-8 text-center text-slate-400 font-medium">No se encontraron médicos.</td></tr>`;
-    cardsContainer.innerHTML = `<div class="bg-white p-6 rounded-2xl text-center text-slate-400 text-xs shadow-sm border border-slate-100">No se encontraron médicos.</div>`;
-    return;
-  }
+      if (datos.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" class="px-5 py-8 text-center text-slate-400 font-medium">No se encontraron médicos.</td></tr>`;
+        cardsContainer.innerHTML = `<div class="bg-white p-6 rounded-2xl text-center text-slate-400 text-xs shadow-sm border border-slate-100">No se encontraron médicos.</div>`;
+        return;
+      }
 
-  let htmlRows = '';
-  let htmlCards = '';
+      let htmlRows = '';
+      let htmlCards = '';
 
-  for (let i = 0; i < datos.length; i++) {
-    const m = datos[i];
-    const estadoPresencial = obtenerEstadoTiempoPresencial(m);
-    const historialCount = m.historial_qr ? m.historial_qr.length : 0;
-    const ultimoEscaneo = historialCount > 0 ? m.historial_qr[historialCount - 1].hora : '-';
+      for (let i = 0; i < datos.length; i++) {
+        const m = datos[i];
+        const estadoPresencial = obtenerEstadoTiempoPresencial(m);
+        const historialCount = m.historial_qr ? m.historial_qr.length : 0;
+        const ultimoEscaneo = historialCount > 0 ? m.historial_qr[historialCount - 1].hora : '-';
 
-    const badgeBgClass = estadoPresencial.estaActivo 
-      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
-      : 'bg-rose-50 text-rose-700 border border-rose-200';
+        const badgeBgClass = estadoPresencial.estaActivo 
+          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+          : 'bg-rose-50 text-rose-700 border border-rose-200';
 
-    htmlRows += `
-      <tr class="hover:bg-slate-50/80 transition-colors">
-        <td class="px-5 py-4 font-mono font-bold text-blue-600 text-xs">${m.codigo}</td>
-        <td class="px-5 py-4 font-bold text-slate-800">${m.nombre}</td>
-        <td class="px-5 py-4 font-medium text-slate-600">${m.especialidad}</td>
-        <td class="px-5 py-4 text-slate-500 text-[11px]">${m.correo || m.telefono || '-'}</td>
-        <td class="px-5 py-4 text-center font-bold text-slate-700">${historialCount} <span class="font-normal text-slate-400 text-[10px]">marcajes</span></td>
-        <td class="px-5 py-4 font-medium text-slate-600 text-[11px]">${ultimoEscaneo}</td>
-        <td class="px-5 py-4 text-center">
-          <div class="inline-flex flex-col items-center px-3 py-1 rounded-xl text-xs ${badgeBgClass}">
-            <span class="font-extrabold text-[9px] uppercase tracking-wider">${estadoPresencial.estadoTexto}</span>
-            <span class="font-black text-xs leading-tight mt-0.5">${estadoPresencial.minutosTexto}</span>
+        htmlRows += `
+          <tr class="hover:bg-slate-50/80 transition-colors">
+            <td class="px-5 py-4 font-mono font-bold text-blue-600 text-xs">${m.codigo}</td>
+            <td class="px-5 py-4 font-bold text-slate-800">${m.nombre}</td>
+            <td class="px-5 py-4 font-medium text-slate-600">${m.especialidad}</td>
+            <td class="px-5 py-4 text-slate-500 text-[11px]">${m.correo || m.telefono || '-'}</td>
+            <td class="px-5 py-4 text-center font-bold text-slate-700">${historialCount} <span class="font-normal text-slate-400 text-[10px]">marcajes</span></td>
+            <td class="px-5 py-4 font-medium text-slate-600 text-[11px]">${ultimoEscaneo}</td>
+            <td class="px-5 py-4 text-center">
+              <div class="inline-flex flex-col items-center px-3 py-1 rounded-xl text-xs ${badgeBgClass}">
+                <span class="font-extrabold text-[9px] uppercase tracking-wider">${estadoPresencial.estadoTexto}</span>
+                <span class="font-black text-xs leading-tight mt-0.5">${estadoPresencial.minutosTexto}</span>
+              </div>
+            </td>
+            <td class="px-5 py-4 text-center">
+              <button onclick="descargarQR('${m.codigo}')" class="px-3 py-1.5 bg-[#003e46] hover:bg-[#062c31] text-white rounded-lg text-[10px] font-bold transition shadow-sm">Descargar QR</button>
+            </td>
+            <td class="px-5 py-4 text-center">
+              <button onclick="abrirModalEditar('${m.codigo}')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-[10px] font-bold transition shadow-sm">Editar</button>
+            </td>
+          </tr>
+        `;
+
+        htmlCards += `
+          <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 space-y-3">
+            <div class="flex justify-between items-start border-b border-slate-100 pb-2.5">
+              <div>
+                <span class="text-[10px] font-mono font-extrabold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full">${m.codigo}</span>
+                <h3 class="text-sm font-bold text-slate-800 mt-1">${m.nombre}</h3>
+                <p class="text-xs text-slate-500">${m.especialidad}</p>
+              </div>
+              <div class="inline-flex flex-col items-end px-2.5 py-1 rounded-xl text-xs ${badgeBgClass}">
+                <span class="font-bold text-[9px] uppercase tracking-wider">${estadoPresencial.estadoTexto}</span>
+                <span class="font-black text-xs leading-tight mt-0.5">${estadoPresencial.minutosTexto}</span>
+              </div>
+            </div>
+
+            <div class="text-[11px] text-slate-600 space-y-1">
+              <p><strong>Contacto:</strong> ${m.correo || m.telefono || '-'}</p>
+              <p><strong>Escaneos Totales:</strong> ${historialCount} marcajes</p>
+              <p><strong>Último Acceso:</strong> ${ultimoEscaneo}</p>
+            </div>
           </div>
-        </td>
-        <td class="px-5 py-4 text-center">
-          <button onclick="descargarQR('${m.codigo}')" class="px-3 py-1.5 bg-[#003e46] hover:bg-[#062c31] text-white rounded-lg text-[10px] font-bold transition shadow-sm">
-            Descargar QR
-          </button>
-        </td>
-        <td class="px-5 py-4 text-center">
-          <button onclick="abrirModalEditar('${m.codigo}')" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-[10px] font-bold transition shadow-sm">
-            Editar
-          </button>
-        </td>
-      </tr>
-    `;
+        `;
+      }
 
-    htmlCards += `
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 space-y-3">
-        <div class="flex justify-between items-start border-b border-slate-100 pb-2.5">
-          <div>
-            <span class="text-[10px] font-mono font-extrabold text-blue-600 bg-blue-50 px-2.5 py-0.5 rounded-full">${m.codigo}</span>
-            <h3 class="text-sm font-bold text-slate-800 mt-1">${m.nombre}</h3>
-            <p class="text-xs text-slate-500">${m.especialidad}</p>
-          </div>
-          <div class="inline-flex flex-col items-end px-2.5 py-1 rounded-xl text-xs ${badgeBgClass}">
-            <span class="font-bold text-[9px] uppercase tracking-wider">${estadoPresencial.estadoTexto}</span>
-            <span class="font-black text-xs leading-tight mt-0.5">${estadoPresencial.minutosTexto}</span>
-          </div>
-        </div>
-
-        <div class="text-[11px] text-slate-600 space-y-1">
-          <p><strong>Contacto:</strong> ${m.correo || m.telefono || '-'}</p>
-          <p><strong>Escaneos Totales:</strong> ${historialCount} marcajes</p>
-          <p><strong>Último Acceso:</strong> ${ultimoEscaneo}</p>
-        </div>
-      </div>
-    `;
-  }
-
-  // Renderizado único al DOM (Ultra rápido)
-  tbody.innerHTML = htmlRows;
-  cardsContainer.innerHTML = htmlCards;
-}
+      tbody.innerHTML = htmlRows;
+      cardsContainer.innerHTML = htmlCards;
+    }
 
     function seleccionarEstado(estado, btn) {
       estadoSeleccionado = estado;
       
       document.querySelectorAll('.btn-estado').forEach(b => {
-        b.className = "btn-estado group relative border-2 border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-[#003e46] hover:bg-white transition-all shadow-sm";
+        b.className = "btn-estado group border-2 border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-[#003e46] hover:bg-white transition-all shadow-sm";
       });
 
-      btn.className = "btn-estado group relative border-2 border-[#003e46] bg-[#003e46] text-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all shadow-md scale-105";
+      btn.className = "btn-estado group border-2 border-[#003e46] bg-[#003e46] text-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all shadow-md scale-105";
 
       const badge = document.getElementById('badge-escaneando');
       if(badge) badge.innerHTML = `<span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping"></span> Escaneando: <strong>${estado}</strong>`;
@@ -508,85 +439,6 @@ $medicos = file_exists($dataFile) ? json_decode(file_get_contents($dataFile), tr
       }, 4000);
     }
 
-    function exportarExcel() {
-      const dataFormat = medicosDB.map(m => {
-        const estadoPresencial = obtenerEstadoTiempoPresencial(m);
-        return {
-          "Código ID": m.codigo,
-          "Nombre Médico": m.nombre,
-          "Especialidad": m.especialidad,
-          "Teléfono": m.telefono || "-",
-          "Correo": m.correo || "-",
-          "Permanencia Presencial (min)": estadoPresencial.minutos
-        };
-      });
-
-      const ws = XLSX.utils.json_to_sheet(dataFormat);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Asistencia");
-      XLSX.writeFile(wb, "Reporte_General_SkipPAIN.xlsx");
-    }
-
-    function exportarPDF() {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF('landscape');
-
-      doc.text("Reporte General de Registrados y Asistencia - Skip PAIN", 14, 15);
-      
-      const cols = ["Código", "Médico", "Especialidad", "Correo", "Presencial (min)"];
-      const rows = medicosDB.map(m => {
-        const estadoPresencial = obtenerEstadoTiempoPresencial(m);
-        return [
-          m.codigo, m.nombre, m.especialidad, m.correo || "-",
-          estadoPresencial.minutos + " min"
-        ];
-      });
-
-      doc.autoTable({
-        head: [cols],
-        body: rows,
-        startY: 20,
-        styles: { fontSize: 8 },
-        headStyles: { fillColor: [0, 62, 70] }
-      });
-
-      doc.save("Reporte_General_SkipPAIN.pdf");
-    }
-
-    function abrirModalEditar(codigo) {
-      const medico = medicosDB.find(m => m.codigo === codigo);
-      if (!medico) return;
-
-      document.getElementById('edit-codigo').value = medico.codigo;
-      document.getElementById('edit-codigo-display').textContent = medico.codigo;
-      document.getElementById('edit-nombre').value = medico.nombre;
-      document.getElementById('edit-especialidad').value = medico.especialidad;
-      document.getElementById('edit-telefono').value = medico.telefono || '';
-      document.getElementById('edit-correo').value = medico.correo || '';
-
-      document.getElementById('modal-editar').classList.remove('hidden');
-    }
-
-    function cerrarModalEditar() {
-      document.getElementById('modal-editar').classList.add('hidden');
-    }
-
-    function guardarEdicionMedico(e) {
-      e.preventDefault();
-      const codigo = document.getElementById('edit-codigo').value;
-      const medico = medicosDB.find(m => m.codigo === codigo);
-
-      if (medico) {
-        medico.nombre = document.getElementById('edit-nombre').value;
-        medico.especialidad = document.getElementById('edit-especialidad').value;
-        medico.telefono = document.getElementById('edit-telefono').value;
-        medico.correo = document.getElementById('edit-correo').value;
-
-        cerrarModalEditar();
-        renderizarTabla();
-      }
-    }
-
     function filtrarTabla() {
       const nom = document.getElementById('filtro-nombre').value.toLowerCase();
       const esp = document.getElementById('filtro-especialidad').value.toLowerCase();
@@ -605,24 +457,8 @@ $medicos = file_exists($dataFile) ? json_decode(file_get_contents($dataFile), tr
       renderizarTabla(filtrados);
     }
 
-    function descargarQR(codigo) {
-      const container = document.getElementById('qrcode-hidden');
-      container.innerHTML = '';
-      
-      new QRCode(container, { text: codigo, width: 300, height: 300 });
-
-      setTimeout(() => {
-        const img = container.querySelector('img');
-        if (img) {
-          const a = document.createElement('a');
-          a.href = img.src;
-          a.download = `QR_${codigo}.png`;
-          a.click();
-        }
-      }, 100);
-    }
-
-    renderizarTabla();
+    // Inicializar al cargar la página
+    cargarBaseDeDatos();
   </script>
 </body>
 </html>
