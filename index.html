@@ -201,11 +201,11 @@
     // CARGA AUTOMÁTICA DE BASE DE DATOS JSON DESDE FETCH
     async function cargarBaseDeDatos() {
       try {
-        const resp = await fetch('medicos.json');
+        const resp = await fetch('medicos_db.json');
         medicosDB = await resp.json();
         renderizarTabla();
       } catch (e) {
-        console.error("Error al cargar medicos.json", e);
+        console.error("Error al cargar medicos_db.json", e);
       }
     }
 
