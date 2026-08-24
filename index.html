@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Control de Asistencia - Skip PAIN</title>
+  <title>Control de Asistencia - Skip Pain</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
@@ -25,7 +25,7 @@
   <header class="bg-[#003e46] text-white py-3.5 px-4 shadow-xl sticky top-0 z-40 border-b border-teal-800/40">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
       <div class="flex items-center gap-3">
-        <span class="text-base font-extrabold tracking-tight text-white">MENARINI</span>
+        <img src="img/menarini_b.png" alt="Menarini Logo" class="h-8 w-auto object-contain">
         <span class="hidden sm:inline-block h-5 w-[1px] bg-teal-600/50"></span>
         <span class="hidden sm:inline-block text-xs font-semibold tracking-wider text-teal-200/80 uppercase">Plataforma de Asistencia</span>
       </div>
@@ -46,9 +46,9 @@
     <!-- PESTAÑA 1: REGISTRO PRESENCIAL -->
     <section id="sec-registrados" class="space-y-6">
       
-      <!-- CARDS KPI -->
+      <!-- CARDS KPI INTERACTIVAS (FILTROS RÁPIDOS) -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between">
+        <div onclick="filtrarPorEstatus('todos')" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between cursor-pointer hover:border-[#003e46] transition">
           <div>
             <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Total Médicos</span>
             <p id="kpi-total" class="text-2xl font-extrabold text-[#003e46]">0</p>
@@ -56,7 +56,7 @@
           <div class="w-10 h-10 rounded-xl bg-teal-50 text-[#003e46] flex items-center justify-center font-bold text-lg">👨‍⚕️</div>
         </div>
 
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between">
+        <div onclick="filtrarPorEstatus('activo')" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between cursor-pointer hover:border-emerald-500 transition">
           <div>
             <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">En Evento Ahora</span>
             <p id="kpi-activos" class="text-2xl font-extrabold text-emerald-600">0</p>
@@ -64,7 +64,7 @@
           <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-lg">🟢</div>
         </div>
 
-        <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between">
+        <div onclick="filtrarPorEstatus('fuera')" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between cursor-pointer hover:border-rose-500 transition">
           <div>
             <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Fuera / Pausados</span>
             <p id="kpi-fuera" class="text-2xl font-extrabold text-rose-500">0</p>
@@ -95,7 +95,13 @@
           </div>
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Especialidad</label>
-            <input type="text" id="filtro-especialidad" oninput="filtrarTabla()" placeholder="Trauma, Ortopedia..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#003e46]/30 transition">
+            <select id="filtro-especialidad" onchange="filtrarTabla()" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-[#003e46]/30 transition">
+              <option value="">Todas las especialidades</option>
+              <option value="ORTOPEDIA">ORTOPEDIA</option>
+              <option value="TRAUMATOLOGÍA">TRAUMATOLOGÍA</option>
+              <option value="TRAUMATOLOGÍA Y ORTOPEDIA">TRAUMATOLOGÍA Y ORTOPEDIA</option>
+              <option value="MEDICINA GENERAL">MEDICINA GENERAL</option>
+            </select>
           </div>
           <div>
             <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Contacto</label>
@@ -137,7 +143,7 @@
     </section>
 
     <!-- PESTAÑA 2: ESCANEO QR -->
-    <section id="sec-escaneo" class="hidden max-w-2xl mx-auto space-y-6">
+    <section id="sec-escaneo" class="hidden max-w-2xl mx-auto space-y-6" data-marcaje="Entrada">
       <div class="bg-white rounded-3xl shadow-xl border border-slate-200/80 p-6 md:p-8 space-y-6">
         <div class="text-center space-y-2">
           <span class="inline-block px-3.5 py-1 bg-[#51c3bc]/20 text-[#003e46] text-[10px] font-extrabold uppercase tracking-widest rounded-full">Control de Asistencia Presencial</span>
@@ -197,7 +203,7 @@
         <span id="nuevo-codigo-display" class="text-xs font-mono font-extrabold bg-teal-50 text-teal-700 px-3 py-1 rounded-full border border-teal-200"></span>
       </div>
       
-      <form id="form-nuevo-medico" onsubmit="guardarNuevoMedico(event)" class="space-y-4">
+      <form id="form-nuevo-medico" onsubmit="guardarNuevoMedico(event)" class="space-y-4" data-tipo="Entrada">
         <input type="hidden" id="nuevo-codigo">
         <div>
           <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Nombre Completo *</label>
@@ -205,7 +211,12 @@
         </div>
         <div>
           <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Especialidad *</label>
-          <input type="text" id="nuevo-especialidad" required placeholder="Traumatología, Medicina General..." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-[#003e46]">
+          <select id="nuevo-especialidad" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-[#003e46]">
+            <option value="ORTOPEDIA">ORTOPEDIA</option>
+            <option value="TRAUMATOLOGÍA">TRAUMATOLOGÍA</option>
+            <option value="TRAUMATOLOGÍA Y ORTOPEDIA">TRAUMATOLOGÍA Y ORTOPEDIA</option>
+            <option value="MEDICINA GENERAL">MEDICINA GENERAL</option>
+          </select>
         </div>
         <div>
           <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Correo Electrónico</label>
@@ -240,7 +251,9 @@
     const medicosRef = db.ref('medicos');
 
     let medicosDB = [];
-    let estadoSeleccionado = "";
+    let medicosFiltradosActuales = [];
+    let marcajeActivoGlobal = "Entrada";
+    let filtroEstatusActual = "todos"; // todos, activo, fuera
     let html5QrcodeScanner = null;
 
     function cargarBaseDeDatos() {
@@ -248,7 +261,7 @@
         const data = snapshot.val();
         if (data) {
           medicosDB = Array.isArray(data) ? data : Object.values(data);
-          renderizarTabla();
+          filtrarTabla();
         } else {
           fetch('medicos_db.json')
             .then(res => res.json())
@@ -261,15 +274,6 @@
 
     function guardarEnFirebase() {
       medicosRef.set(medicosDB);
-    }
-
-    function limpiarSeleccionBotones() {
-      estadoSeleccionado = "";
-      document.querySelectorAll('.btn-estado').forEach(b => {
-        b.className = "btn-estado group border-2 border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-[#003e46] hover:bg-white transition-all shadow-sm outline-none";
-        const span = b.querySelector('span');
-        if (span) span.className = "text-xs font-bold text-slate-700";
-      });
     }
 
     function cambiarPestana(pestana) {
@@ -286,7 +290,7 @@
       });
 
       if (pestana !== 'escaneo') detenerCamara();
-      if (pestana === 'registrados') renderizarTabla();
+      if (pestana === 'registrados') filtrarTabla();
     }
 
     function obtenerEstadoTiempoPresencial(m) {
@@ -364,6 +368,11 @@
       document.getElementById('kpi-marcajes').textContent = totalMarcajes;
     }
 
+    function filtrarPorEstatus(tipo) {
+      filtroEstatusActual = tipo;
+      filtrarTabla();
+    }
+
     function renderizarTabla(datos = medicosDB) {
       const tbody = document.getElementById('tabla-body');
       const cardsContainer = document.getElementById('cards-container-mobile');
@@ -436,8 +445,14 @@
     }
 
     function seleccionarEstado(estado, btn) {
-      estadoSeleccionado = estado;
-      limpiarSeleccionBotones();
+      marcajeActivoGlobal = estado;
+      document.getElementById('sec-escaneo').setAttribute('data-marcaje', estado);
+
+      document.querySelectorAll('.btn-estado').forEach(b => {
+        b.className = "btn-estado group border-2 border-slate-200 bg-slate-50/50 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-[#003e46] hover:bg-white transition-all shadow-sm outline-none";
+        const span = b.querySelector('span');
+        if (span) span.className = "text-xs font-bold text-slate-700";
+      });
 
       btn.className = "btn-estado group border-2 border-[#003e46] bg-[#003e46] text-white p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all shadow-md scale-105 outline-none";
       const span = btn.querySelector('span');
@@ -452,21 +467,56 @@
     function iniciarCamara() {
       document.getElementById('cam-container').classList.remove('hidden');
       if (html5QrcodeScanner) {
-        html5QrcodeScanner.stop().then(() => {
-          html5QrcodeScanner = null;
-          lanzarLectorQR();
-        }).catch(() => lanzarLectorQR());
-      } else {
-        lanzarLectorQR();
+        detenerCamara();
       }
-    }
-
-    function lanzarLectorQR() {
+      
       html5QrcodeScanner = new Html5Qrcode("reader");
       html5QrcodeScanner.start(
         { facingMode: "environment" },
         { fps: 10, qrbox: 250 },
-        onScanSuccess
+        (decodedText) => {
+          const tipoMarcajeActual = document.getElementById('sec-escaneo').getAttribute('data-marcaje') || marcajeActivoGlobal || 'Entrada';
+          
+          detenerCamara();
+
+          const now = new Date();
+          const horaTexto = now.toLocaleDateString([], { day: '2-digit', month: '2-digit' }) + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          const timestampUnix = Math.floor(now.getTime() / 1000);
+
+          let medico = medicosDB.find(m => m.codigo === decodedText || decodedText.startsWith(m.codigo));
+          const divRes = document.getElementById('resultado-escaneo');
+
+          if (medico) {
+            if (!medico.historial_qr) medico.historial_qr = [];
+
+            medico.historial_qr.push({
+              tipo: tipoMarcajeActual,
+              timestamp: timestampUnix,
+              hora: horaTexto
+            });
+
+            guardarEnFirebase();
+
+            divRes.className = "mt-4 p-6 rounded-2xl bg-emerald-600 text-white shadow-xl space-y-2 text-center border-2 border-emerald-400";
+            divRes.innerHTML = `
+              <div class="text-2xl font-black flex items-center justify-center gap-2">✓ ¡Acceso Registrado!</div>
+              <div class="text-sm font-bold opacity-95">${medico.nombre}</div>
+              <div class="text-xs opacity-80">${medico.especialidad} — (${medico.codigo})</div>
+              <div class="inline-block mt-2 px-4 py-1.5 bg-white/20 backdrop-blur-md rounded-full text-xs font-mono font-black uppercase tracking-wider">
+                ${tipoMarcajeActual} • ${horaTexto}
+              </div>
+            `;
+            filtrarTabla();
+          } else {
+            abrirModalNuevo(decodedText, tipoMarcajeActual);
+          }
+
+          divRes.classList.remove('hidden');
+          setTimeout(() => {
+            divRes.classList.add('hidden');
+            divRes.innerHTML = '';
+          }, 4000);
+        }
       ).catch(err => alert("Cámara no disponible: " + err));
     }
 
@@ -479,56 +529,10 @@
       }
     }
 
-    function onScanSuccess(decodedText) {
-      // 1. EXTRAER EL MARCAJE SELECCIONADO ANTES DE CUALQUIER OTRA ACCIÓN
-      const tipoMarcajeActual = estadoSeleccionado || 'Entrada';
-
-      // 2. Apagar la cámara y limpiar botones
-      detenerCamara();
-      limpiarSeleccionBotones();
-
-      const now = new Date();
-      const horaTexto = now.toLocaleDateString([], { day: '2-digit', month: '2-digit' }) + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const timestampUnix = Math.floor(now.getTime() / 1000);
-
-      let medico = medicosDB.find(m => m.codigo === decodedText || decodedText.startsWith(m.codigo));
-      const divRes = document.getElementById('resultado-escaneo');
-
-      if (medico) {
-        if (!medico.historial_qr) medico.historial_qr = [];
-
-        medico.historial_qr.push({
-          tipo: tipoMarcajeActual,
-          timestamp: timestampUnix,
-          hora: horaTexto
-        });
-
-        guardarEnFirebase();
-
-        divRes.className = "mt-4 p-6 rounded-2xl bg-emerald-600 text-white shadow-xl space-y-2 text-center animate-bounce border-2 border-emerald-400";
-        divRes.innerHTML = `
-          <div class="text-2xl font-black flex items-center justify-center gap-2">✓ ¡Acceso Registrado!</div>
-          <div class="text-sm font-bold opacity-95">${medico.nombre}</div>
-          <div class="text-xs opacity-80">${medico.especialidad} — (${medico.codigo})</div>
-          <div class="inline-block mt-2 px-4 py-1.5 bg-white/20 backdrop-blur-md rounded-full text-xs font-mono font-black uppercase tracking-wider">
-            ${tipoMarcajeActual} • ${horaTexto}
-          </div>
-        `;
-        renderizarTabla();
-      } else {
-        abrirModalNuevo(decodedText);
-      }
-
-      divRes.classList.remove('hidden');
-      setTimeout(() => {
-        divRes.classList.add('hidden');
-        divRes.innerHTML = '';
-      }, 4000);
-    }
-
-    function abrirModalNuevo(codigo) {
+    function abrirModalNuevo(codigo, tipoMarcaje) {
       document.getElementById('nuevo-codigo').value = codigo;
       document.getElementById('nuevo-codigo-display').textContent = codigo;
+      document.getElementById('form-nuevo-medico').setAttribute('data-tipo', tipoMarcaje);
       document.getElementById('modal-nuevo').classList.remove('hidden');
     }
 
@@ -542,6 +546,7 @@
       const nombre = document.getElementById('nuevo-nombre').value;
       const especialidad = document.getElementById('nuevo-especialidad').value;
       const correo = document.getElementById('nuevo-correo').value;
+      const tipo = document.getElementById('form-nuevo-medico').getAttribute('data-tipo') || 'Entrada';
 
       const now = new Date();
       const horaTexto = now.toLocaleDateString([], { day: '2-digit', month: '2-digit' }) + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -559,7 +564,7 @@
         minutos_online: 0,
         ultima_conexion: "-",
         historial_qr: [{
-          tipo: 'Entrada',
+          tipo: tipo,
           timestamp: timestampUnix,
           hora: horaTexto
         }]
@@ -574,24 +579,40 @@
 
     function filtrarTabla() {
       const nom = document.getElementById('filtro-nombre').value.toLowerCase();
-      const esp = document.getElementById('filtro-especialidad').value.toLowerCase();
+      const esp = document.getElementById('filtro-especialidad').value.toUpperCase();
       const con = document.getElementById('filtro-contacto').value.toLowerCase();
       const cod = document.getElementById('filtro-codigo').value.toLowerCase();
 
-      const filtrados = medicosDB.filter(m => {
+      medicosFiltradosActuales = medicosDB.filter(m => {
+        const est = obtenerEstadoTiempoPresencial(m);
         const matchNombre = m.nombre ? m.nombre.toLowerCase().includes(nom) : true;
-        const matchEsp = m.especialidad ? m.especialidad.toLowerCase().includes(esp) : true;
+        
+        // Filtro flexible de especialidad
+        let matchEsp = true;
+        if (esp) {
+          const espMedico = (m.especialidad || '').toUpperCase();
+          if (esp === "TRAUMATOLOGÍA Y ORTOPEDIA") {
+            matchEsp = espMedico.includes("TRAUMATOLOGÍA") || espMedico.includes("ORTOPEDIA");
+          } else {
+            matchEsp = espMedico === esp;
+          }
+        }
+
         const matchContacto = (m.correo && m.correo.toLowerCase().includes(con)) || (m.telefono && m.telefono.includes(con));
         const matchCodigo = m.codigo ? m.codigo.toLowerCase().includes(cod) : true;
 
-        return matchNombre && matchEsp && matchContacto && matchCodigo;
+        let matchEstatus = true;
+        if (filtroEstatusActual === "activo") matchEstatus = est.estaActivo;
+        if (filtroEstatusActual === "fuera") matchEstatus = !est.estaActivo;
+
+        return matchNombre && matchEsp && matchContacto && matchCodigo && matchEstatus;
       });
 
-      renderizarTabla(filtrados);
+      renderizarTabla(medicosFiltradosActuales);
     }
 
     function exportarExcel() {
-      const datosExcel = medicosDB.map(m => {
+      const datosExcel = medicosFiltradosActuales.map(m => {
         const est = obtenerEstadoTiempoPresencial(m);
         const h = m.historial_qr ? (Array.isArray(m.historial_qr) ? m.historial_qr : Object.values(m.historial_qr)) : [];
         return {
@@ -619,7 +640,7 @@
       
       doc.text("Reporte de Asistencia Presencial - Skip PAIN", 14, 15);
       
-      const filas = medicosDB.map(m => {
+      const filas = medicosFiltradosActuales.map(m => {
         const est = obtenerEstadoTiempoPresencial(m);
         const h = m.historial_qr ? (Array.isArray(m.historial_qr) ? m.historial_qr : Object.values(m.historial_qr)) : [];
         return [
