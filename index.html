@@ -296,58 +296,60 @@
   }
 
   function obtenerEstadoTiempoPresencial(m) {
-  if (!m.historial_qr) {
-    return { minutos: 0, estaActivo: false, estadoTexto: 'FUERA DE EVENTO', minutosTexto: '0 min' };
-  }
-
-  // 1. Normalizar el historial sin importar si Firebase lo convirtió en Objeto o Array
-  let historial = [];
-  if (Array.isArray(m.historial_qr)) {
-    historial = m.historial_qr;
-  } else if (typeof m.historial_qr === 'object') {
-    historial = Object.values(m.historial_qr);
-  }
-
-  if (historial.length === 0) {
-    return { minutos: 0, estaActivo: false, estadoTexto: 'FUERA DE EVENTO', minutosTexto: '0 min' };
-  }
-
-  // 2. Ordenar cronológicamente por timestamp por si Firebase desordenó los objetos
-  historial.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
-
-  let totalSegundos = 0;
-  let ultimaEntrada = null;
-  let estaActivo = false;
-  const ahoraUnix = Math.floor(Date.now() / 1000);
-
-  // 3. Evaluar marcajes flexibilizando minúsculas y mayúsculas
-  historial.forEach(e => {
-    const tipo = (e.tipo || '').toLowerCase().trim();
-
-    if (tipo.includes('entrada') || tipo.includes('regreso')) {
-      ultimaEntrada = e.timestamp;
-      estaActivo = true;
-    } else if ((tipo.includes('salida')) && ultimaEntrada) {
-      totalSegundos += (e.timestamp - ultimaEntrada);
-      ultimaEntrada = null;
-      estaActivo = false;
+    if (!m.historial_qr) {
+      return { minutos: 0, estaActivo: false, estadoTexto: 'FUERA DE EVENTO', minutosTexto: '0 min' };
     }
-  });
 
-  // Si sigue dentro del evento actualmente, sumar el tiempo transcurrido hasta este momento
-  if (estaActivo && ultimaEntrada) {
-    totalSegundos += (ahoraUnix - ultimaEntrada);
+    let historial = [];
+    if (Array.isArray(m.historial_qr)) {
+      historial = m.historial_qr;
+    } else if (typeof m.historial_qr === 'object') {
+      historial = Object.values(m.historial_qr);
+    }
+
+    if (historial.length === 0) {
+      return { minutos: 0, estaActivo: false, estadoTexto: 'FUERA DE EVENTO', minutosTexto: '0 min' };
+    }
+
+    historial.sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+
+    let totalSegundosAcumulados = 0;
+    let ultimaEntradaTimestamp = null;
+    let estaActivo = false;
+    const ahoraUnix = Math.floor(Date.now() / 1000);
+
+    historial.forEach(e => {
+      const tipo = (e.tipo || '').toLowerCase().trim();
+
+      if (tipo.includes('entrada') || tipo.includes('regreso')) {
+        if (!estaActivo) {
+          ultimaEntradaTimestamp = e.timestamp;
+          estaActivo = true;
+        }
+      } else if (tipo.includes('salida')) {
+        if (estaActivo && ultimaEntradaTimestamp) {
+          totalSegundosAcumulados += (e.timestamp - ultimaEntradaTimestamp);
+          ultimaEntradaTimestamp = null;
+          estaActivo = false;
+        }
+      }
+    });
+
+    // Si actualmente está dentro, sumamos el tiempo desde la última entrada hasta este instante
+    if (estaActivo && ultimaEntradaTimestamp) {
+      totalSegundosAcumulados += (ahoraUnix - ultimaEntradaTimestamp);
+    }
+
+    const minutosTotales = Math.max(0, Math.round(totalSegundosAcumulados / 60));
+
+    return {
+      minutos: minutosTotales,
+      estaActivo: estaActivo,
+      estadoTexto: estaActivo ? '● EN EVENTO' : 'FUERA DE EVENTO',
+      minutosTexto: `${minutosTotales} min`
+    };
   }
 
-  const minutosTotales = Math.max(0, Math.round(totalSegundos / 60));
-
-  return {
-    minutos: minutosTotales,
-    estaActivo: estaActivo,
-    estadoTexto: estaActivo ? '● EN EVENTO' : 'FUERA DE EVENTO',
-    minutosTexto: `${minutosTotales} min`
-  };
-}
 
   function actualizarKPIs() {
     let activos = 0;
@@ -478,13 +480,17 @@
       html5QrcodeScanner.stop().then(() => {
         html5QrcodeScanner = null;
         document.getElementById('cam-container').classList.add('hidden');
-        limpiarSeleccionBotones();
+        // NOTA: Quitamos limpiarSeleccionBotones() de aquí para no borrar el estado antes de registrarlo
       }).catch(() => {});
     }
   }
 
   function onScanSuccess(decodedText) {
+    // Guardamos el estado seleccionado en una variable local ANTES de apagar la cámara
+    const tipoMarcajeActual = estadoSeleccionado || 'Entrada';
+
     detenerCamara();
+    limpiarSeleccionBotones(); // Limpiamos los botones DESPUÉS de haber guardado la variable
 
     const now = new Date();
     const horaTexto = now.toLocaleDateString([], { day: '2-digit', month: '2-digit' }) + ' ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -497,7 +503,7 @@
       if (!medico.historial_qr) medico.historial_qr = [];
 
       medico.historial_qr.push({
-        tipo: estadoSeleccionado || 'Entrada',
+        tipo: tipoMarcajeActual,
         timestamp: timestampUnix,
         hora: horaTexto
       });
@@ -510,9 +516,10 @@
         <div class="text-sm font-bold opacity-95">${medico.nombre}</div>
         <div class="text-xs opacity-80">${medico.especialidad} — (${medico.codigo})</div>
         <div class="inline-block mt-2 px-4 py-1.5 bg-white/20 backdrop-blur-md rounded-full text-xs font-mono font-black uppercase tracking-wider">
-          ${estadoSeleccionado || 'Entrada'} • ${horaTexto}
+          ${tipoMarcajeActual} • ${horaTexto}
         </div>
       `;
+      renderizarTabla();
     } else {
       abrirModalNuevo(decodedText);
     }
